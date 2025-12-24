@@ -10,7 +10,8 @@ from typing import Any, Callable, List, Optional, cast
 
 from langchain_tavily import TavilySearch  # type: ignore[import-not-found]
 
-from configuration import Configuration
+from .configuration import Configuration
+from .utils import load_chat_model
 
 
 async def search(query: str) -> Optional[dict[str, Any]]:
@@ -25,4 +26,15 @@ async def search(query: str) -> Optional[dict[str, Any]]:
     return cast(dict[str, Any], await wrapped.ainvoke({"query": query}))
 
 
-TOOLS: List[Callable[..., Any]] = [search]
+async def simple_answer(query: str) -> Optional[dict[str, Any]]:
+    """Answer the user's query if it's a simple question or request.
+    This function is designed to handle straightforward queries that can be answered
+    without complex processing or external data retrieval.
+    """
+    Configuration = Configuration.from_context()
+    model = load_chat_model()
+    response = await model.ainvoke(query)
+    return cast(dict[str, Any], {"response": response.content})
+
+
+TOOLS: List[Callable[..., Any]] = [simple_answer]

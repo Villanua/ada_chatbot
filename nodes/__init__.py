@@ -1,4 +1,4 @@
-from nodes.call_model import call_model
+from .call_model import call_model
 
 __all__ = [
     "call_model",

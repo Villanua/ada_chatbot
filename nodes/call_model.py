@@ -3,9 +3,10 @@ from typing import Dict, List, cast
 
 from langchain_core.messages import AIMessage
 
-from configuration import Configuration
-from state import State
-from utils import load_chat_model
+from ..configuration import Configuration
+from ..state import State
+from ..utils import load_chat_model
+from ..tools import TOOLS
 
 async def call_model(state: State) -> Dict[str, List[AIMessage]]:
     """Call the LLM powering our "agent".
@@ -22,7 +23,7 @@ async def call_model(state: State) -> Dict[str, List[AIMessage]]:
     configuration = Configuration.from_context()
 
     # Initialize the model with tool binding. Change the model or add more tools here.
-    model = load_chat_model(configuration.model).bind_tools(TOOLS)
+    model = load_chat_model().bind_tools(TOOLS)
 
     # Format the system prompt. Customize this to change the agent's behavior.
     system_message = configuration.system_prompt.format(
